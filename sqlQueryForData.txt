@@ -1,0 +1,28 @@
+Select 
+Term_Code,Student_User_Id,Project_ID,Draft_ID,
+P1T1_Text,P2T1_Text,P3T1_Text,P4T1_Text,P5T1_Text,P6T1_Text,P7T1_Text,P8T1_Text,P9T1_Text,
+Overall_Comments, Rubric_Score, Final_Grade from 
+MyR_Rubric_Data 
+where 
+Project_ID = 3 and Draft_ID = 18 and
+Org_Code='USF' and 
+Term_Code='201501'  and 
+Student_User_Id in 
+	(Select  Distinct U.User_Id 
+	from MyR_Users U 
+    Join MYR_Login L on L.User_Id = U.User_Id and L.Org_Code= U.Org_Code
+    join MyR_Courses C on C.Class_Code = u.Class_Code and c.Org_Code = U.Org_Code 
+	where 
+	U.Term_Code='201501' and 
+	C.Class_Description Like('ENC 1101%') and 
+	L.User_Role='Student'and 
+	U.User_Id not in 
+		(Select Distinct User_Id 
+		 from MyR_Users U 
+		 join MyR_Courses C on C.Class_Code = u.Class_Code and c.Org_Code = U.Org_Code 
+		 where 
+		 U.Org_Code='USF' and  
+		 C.Class_Description Like('ENC 1102%')
+		 )
+	)
+	order by Student_User_Id,Project_ID,Draft_ID
